@@ -8,7 +8,7 @@ This repository containts:
  - `wrapper_function.R`, containing the programmed wrapper for testing hypotheses from two-level models using the package `bain`;
  - `R scripit` containining the code from the *senitivity analysis*.
 
-### Instructions:
+## Instructions:
 Download the repository as a `zip` folder, extract it, store it on your local computer and then run the `Sensitivity_analysis.R` scripit (don't forget to set the working directory where the other two remaining files are stored, otherwise the code won't run).
 
 
