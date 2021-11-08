@@ -41,7 +41,7 @@ mlm_bain_std(x, "LRTscore = AvsLRT = 0;
              fraction = 1, standardize = FALSE, seed = 123)
 
 
-# SENSITIVITY AANALYSIS ---------------------------------------------------
+# SENSITIVITY ANALYSIS ---------------------------------------------------
 
 # J = 2
 mlm_bain_std(x, "LRTscore = AvsLRT = 0;
@@ -61,8 +61,6 @@ mlm_bain_std(x, "LRTscore = AvsLRT = 0;
 # store the results obtained above
 BF_o <- c(0.35, 0.25, 0.20, 0.17)
 BF_i <- rep(4.21, 4)
-ax <- c(1,2,3,4)
-
 
 # plot
 par(mfrow = c(1, 2)) 
