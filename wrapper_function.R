@@ -43,7 +43,7 @@ mlm_bain_std <- function(x, hypotheses, fraction, standardize = FALSE, type.of.s
   estimates_z <- as.data.frame(estimates_z[[1]])
   estimates_z <- estimates_z[ , -1] #remove the intercept
   fixed_estimates_z <- apply(estimates_z, 2, mean) # obtain fix effects
-  n <- names(estimates) #extrct the names of parameters  I ONLY NEED THIS FOR NOW
+  n <- names(estimates) #extrct the names of parameters  
   names(fixed_estimates_z) <- n #add names  I ONLY NEED THIS FOR NOW
   cov_z <- as.matrix(vcov(z)[-1, -1]) #obtain the covariance matrix 
   #---------------------------------------  
