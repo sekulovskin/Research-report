@@ -6,7 +6,7 @@ This repository contains all of the necessary code to fully reproduce the result
 This repository containts: 
  - the data stored as  `exam.sav`; 
  - `wrapper_function.R`, containing the programmed wrapper for testing hypotheses from two-level models using the package `bain`;
- - `R scripit` containining the code from the *senitivity analysis*.
+ - `Sensitivity_analysis.R` containining the code from the *senitivity analysis*.
  - `Research-report.tex` containing the research paper along with the code for the tables.
 
 ## Instructions:
