@@ -1,0 +1,479 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  english,
+  man]{apa6}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Prior Sensitivity of Null Hypothesis Bayesian Testing in the Context of Two-level Models},
+  pdfauthor={Nikola Sekulovski 6465588},
+  pdflang={en-EN},
+  pdfkeywords={Bayes Factor, Null Hypothesis Bayesian Testing, Prior Sensitiity},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+% Manuscript styling
+\usepackage{upgreek}
+\captionsetup{font=singlespacing,justification=justified}
+
+% Table formatting
+\usepackage{longtable}
+\usepackage{lscape}
+% \usepackage[counterclockwise]{rotating}   % Landscape page setup for large tables
+\usepackage{multirow}		% Table styling
+\usepackage{tabularx}		% Control Column width
+\usepackage[flushleft]{threeparttable}	% Allows for three part tables with a specified notes section
+\usepackage{threeparttablex}            % Lets threeparttable work with longtable
+
+% Create new environments so endfloat can handle them
+% \newenvironment{ltable}
+%   {\begin{landscape}\centering\begin{threeparttable}}
+%   {\end{threeparttable}\end{landscape}}
+\newenvironment{lltable}{\begin{landscape}\centering\begin{ThreePartTable}}{\end{ThreePartTable}\end{landscape}}
+
+% Enables adjusting longtable caption width to table width
+% Solution found at http://golatex.de/longtable-mit-caption-so-breit-wie-die-tabelle-t15767.html
+\makeatletter
+\newcommand\LastLTentrywidth{1em}
+\newlength\longtablewidth
+\setlength{\longtablewidth}{1in}
+\newcommand{\getlongtablewidth}{\begingroup \ifcsname LT@\roman{LT@tables}\endcsname \global\longtablewidth=0pt \renewcommand{\LT@entry}[2]{\global\advance\longtablewidth by ##2\relax\gdef\LastLTentrywidth{##2}}\@nameuse{LT@\roman{LT@tables}} \fi \endgroup}
+
+% \setlength{\parindent}{0.5in}
+% \setlength{\parskip}{0pt plus 0pt minus 0pt}
+
+% \usepackage{etoolbox}
+\makeatletter
+\patchcmd{\HyOrg@maketitle}
+  {\section{\normalfont\normalsize\abstractname}}
+  {\section*{\normalfont\normalsize\abstractname}}
+  {}{\typeout{Failed to patch abstract.}}
+\patchcmd{\HyOrg@maketitle}
+  {\section{\protect\normalfont{\@title}}}
+  {\section*{\protect\normalfont{\@title}}}
+  {}{\typeout{Failed to patch title.}}
+\makeatother
+\shorttitle{Research Report}
+\keywords{Bayes Factor, Null Hypothesis Bayesian Testing, Prior Sensitiity\newline\indent Word count: 2454}
+\DeclareDelayedFloatFlavor{ThreePartTable}{table}
+\DeclareDelayedFloatFlavor{lltable}{table}
+\DeclareDelayedFloatFlavor*{longtable}{table}
+\makeatletter
+\renewcommand{\efloat@iwrite}[1]{\immediate\expandafter\protected@write\csname efloat@post#1\endcsname{}}
+\makeatother
+\usepackage{lineno}
+
+\linenumbers
+\usepackage{csquotes}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{placeins}
+\ifxetex
+  % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
+  \usepackage{polyglossia}
+  \setmainlanguage[]{english}
+\else
+  \usepackage[main=english]{babel}
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+\fi
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1 \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces\fi
+  % set entry spacing
+  \ifnum #2 > 0
+  \setlength{\parskip}{#2\baselineskip}
+  \fi
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\title{\textbf{Prior Sensitivity of Null Hypothesis Bayesian Testing in the Context of Two-level Models}}
+\author{Nikola Sekulovski 6465588\textsuperscript{}}
+\date{}
+
+
+\affiliation{\vspace{0.5cm}\textsuperscript{} Utrecht University, Department of Methodology and Statistics}
+
+\begin{document}
+\maketitle
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Following an increasing wave of criticism directed towards \emph{Null Hypothesis Significance Testing (NHST)} (Cohen, 1994; Wagenmakers, 2007), the Bayesian approach to evaluating hypotheses, epitomized by the \emph{Bayes Factor} (abbreviated as \emph{BF}, Jeffreys, 1935) is gaining momentum. This paradigm, at least compared to NHST, is said to give more intuitive results and, most importantly, does not rely on strict cutoff values such as the often vilified \("\alpha = .05"\) (see, for example, Hoijtink, Mulder, Lissa, \& Gu, 2019 for further elaborations on the strengths of the BF). As it is with every statistical technique, especially with novel methods such as the Bayesian approach to hypothesis testing, they should not be taken for granted, and their drawbacks should always be considered and, hopefully, addressed. This leads to the main topic of this paper, which is to \emph{illustrate} the sensitivity of the Bayes Factor (Kass \& Raftery, 1995) to the specification of the prior distribution, when evaluating null hypotheses\footnote{Hypotheses that impose equality and/or about-equality constraints between the parameters of a statistical model.} \emph{in the context of two-level models}. Multilevel models are used when the data has a hierarchical structure, for example, when individuals are nested within groups, allowing the researcher to take the within group dependence into account. In such models, variables can be defined at different levels. Two-level models are the most common case of multilevel models, where the hierarchical structure of the data has two levels (e.g., students nested within schools or observations nested within individuals). For the statistical foundations of multilevel modeling please refer to Hox, Moerbeek, and Van de Schoot (2017).
+
+This brief paper is intended to serve as a predecessor to a more detailed paper that will aim to \emph{address} this issue in the context of two-level models, based on the work presented in Hoijtink (2021). Throughout this text, the application of the Bayes Factor, in evaluating \emph{null hypotheses} for two-level models, will be referred to as: \emph{Null Hypotheses Bayesian Testing (NHBT)}, a term also used in Hoijtink (2021), which was first introduced by Tendeiro and Kiers (2019).
+
+This paper is divided as follows. In the next section, the mathematical definition of the BF is briefly introduced, followed by the introduction of the \emph{Approximated Adjusted Fractional Bayes Factor} (\emph{AAFBF}, Gu, Mulder, \& Hoijtink, 2018), the BF used in this paper. Afterwards, the \texttt{R} package \texttt{bain} (Gu, Hoijtink, Mulder, \& van Lissa, 2021) is presented as the basis for describing a \texttt{wrapper\ function}, specifically programmed for the aims of this study, which uses \texttt{bain} to test hypotheses imposing equality (and inequality) constraints on the parameters representing the \emph{fixed} effects in two-level models. Two additional issues that will be addressed in the successor paper, specific to multilevel models, are briefly mentioned in this section. In the section that follows the prior sensitivity of the AAFBF is illustrated using an openly available, two-level data set and the aforementioned \texttt{wrapper\ function}. This article concludes with a \emph{Discussion} regarding the sensitivity analysis, setting the stage for the work that will follow in the next paper. All the results presented here are fully reproducible and can be obtained on \href{https://github.com/sekulovskin/Research-report}{\textcolor{blue}{GitHub}}.
+
+\hypertarget{the-bayes-factor}{%
+\section{The Bayes Factor}\label{the-bayes-factor}}
+
+The \textbf{Bayes Factor} (Kass \& Raftery, 1995) is defined as the ratio of two marginal likelihoods (see, Equation 1). Tendeiro and Kiers (2019) define the marginal likelihood as: ``\ldots weighted average of the likelihood over the observed data, where the weights are provided by the (within) priors.''
+
+\begin{equation}
+BF_{0,1} = \frac{\int P(D|\theta_{H_0}, H_0) P(\theta|H_0) d\theta_{H_0}}{\int P(D|\theta_{H_1}, H_1) P(\theta|H_1) d\theta_{H_1}}
+\end{equation}
+
+\newpage
+
+The definition given above has two important aspects: (1) It defines the marginal likelihood as the denominator (normalizing constant) of Bayes' rule when used in the context of model (parameter) estimation. (2) It stresses the the role of the prior distribution on the marginal likelihood, and consequently on the value of the Bayes Factor itself. This second aspect is the overall reason why the BF is sensitive to the specification of the prior distribution.
+
+Furthermore, the BF can be seen as a multiplicative factor that transforms the prior odds of two hypotheses to the posterior odds, after seeing the data (equation 2). However, if the prior odds of the hypotheses are set to equal one, by setting the prior probabilities of both hypotheses\footnote{Not to be confused with the prior distribution used in model estimation, which is the main focus.} equal to each other, then the BF will be equal to the posterior odds (Kass \& Raftery, 1995).
+
+\begin{equation}
+\frac{P(H_0|D)}{P(H_1|D)} = \frac{P(D|H_0)}{P(D|H_1)} \frac{P(H_0)}{P(H_1)}
+\end{equation}
+
+As it might be clear by now, a straightforward calculation of the BF, based on its pure mathematical definition presented in Equation 1, is impossible in most applied situations. However, for testing null (and informative) hypotheses, Equation 1 can be written as Equation 3. Thus, translating the Bayes Factor into a so-called \emph{Approximated Adjusted Fractional Bayes Factor}, which is defined as the ratio of the \emph{fit} and \emph{complexity} of a hypothesis
+(Gu, Mulder, \& Hoijtink, 2018; Hoijtink, Gu, \& Mulder, 2019; for a full proof of this BF see: Mulder, 2014). When testing hypotheses containing equality constraints: \emph{fit} represents the density of the \emph{posterior} distribution supported by the hypothesis at hand; and the \emph{complexity} represents the density of the \emph{prior} distribution supported by the hypothesis at hand (Hoijtink, Mulder, Lissa, \& Gu, 2019)\footnote{When testing inequality constrained hypotheses instead of densities we deal with proportions.}.
+
+\begin{equation}
+AAFBF_{0u} = \frac{f_0}{c_0} = \frac{\int_{\theta \in \Theta_0}N(\hat{\theta},\hat{\Sigma_{\theta}})}{\int_{\theta \in \Theta_0}N(0,\hat{\Sigma_{\theta}}/b)}
+\end{equation}
+
+In Equation 3, \(\hat{\theta}\) represents a vector of estimated parameters and \(\hat{\Sigma_{\theta}}\) represents their respective covariance matrix. It is important to stress that the AAFBF is calculated for each hypothesis against the unconstrained hypothesis or its compliment, however, in the case of null hypotheses these are the same. Afterwards, the BF of two (informative) hypotheses equals the ratio of their respective BF's against the unconstrained hypothesis. A \(BF_{01} = 5\) would mean that the data is five times in favor of \(H_0\) compared to \(H_1\) (Hoijtink, Mulder, Lissa, \& Gu, 2019; for more guidelines on interpreting BF's see, Kass \& Raftery, 1995).
+
+This BF uses a fraction \(b = \frac{J}{N}\) (see, Equation 3) of the information in the data to construct the scaling parameter of the prior distribution, where \emph{N} represents the sample size and \emph{J} usually denotes the number of independent constraints in the (informative) hypothesis at hand. We will return to the values of \emph{J}, \emph{N} and subsequently \emph{b} in the following sections, since they are directly linked to the sensitivity of the AAFBF. It should be noted that in the denominator of Equation 3, the mean of the normal approximation of the prior distribution, \(N(0,\hat{\Sigma_{\theta}}/b)\), is zero \emph{only} in the case of testing hypotheses where all parameters are equal to zero (ie., \(\theta_1 = \theta_2 = 0\)), in the case of testing whether the parameters are equal to each other (ie., \(\theta_1 = \theta_2\)) the mean represents the mean value of the differences between the parameters, there are also many other situations (especially with regards to informative hypotheses, and the interested reader is referred to Gu, Mulder, \& Hoijtink, 2018, for more details).
+
+\newpage
+
+\hypertarget{software}{%
+\section{Software}\label{software}}
+
+The \texttt{R} package \texttt{bain} (\textbf{Ba}yesian \textbf{in}formative hypothesis evaluation), can be used to calculate the AAFBF of a hypothesis against it's compliment or the unconstrained hypothesis, using only the estimated parameters and their respective covaraiance matrix, obtained using standard statistical software packages (which usually use some form of \emph{Maximum Likelihood Estimation} Gu, Hoijtink, Mulder, \& van Lissa, 2021). A so-called \texttt{wrapper\ function}\footnote{See, \href{https://en.wikipedia.org/wiki/Wrapper_function}{\textcolor{blue}{this}} link for a definition of \texttt{wrapper\ functions}.} was programmed specifically for the aims of this (and the following) paper, in order to conveniently use \texttt{bain} to test hypotheses imposing (in)equality constraints on the fixed parameters of two-level models built with the \texttt{lmer} function from the \texttt{R} package \texttt{lme4} (Bates, Mächler, Bolker, \& Walker, 2015). This function takes as arguments: the \texttt{lmer} object; the specified hypotheses; a logical indicating whether to standardize the data; which type of standardization to apply; setting the random seed; and most importantly, an argument \texttt{fraction} indicating the size of the minimal fraction \emph{b}, by default this is set to 1 (i.e., 1 * \emph{b}).
+
+While programming this function, three additional questions arose, specific to using \texttt{bain} in the context of two-level models: (1) When testing equality constrained hypotheses of the form: \(\theta_1 = \theta_2\), i.e., when comparing whether the parameters are equal to each other, it only makes sense to test the \emph{standardized} coefficients. This is easily done when using \texttt{bain} for multiple linear regression models (Jones \& Waller, 2015). However, standardizing the (fixed) parameters of a multilevel model is not so straightforward as it is with multiple linear regression. First, we cannot use the standardized regression coefficients (i.e., like the \(\beta's\) in multiple regression) directly, since there is no known way of obtaining their respective \emph{standardized} covariance matrix. Secondly, when standardizing the data beforehand (which directly results in standardized coefficients), there remains an open question whether to use, so-called, \emph{overall standardization} or \emph{within-group standardization} (see, Schuurman, Ferrer, Boer-Sonnenschein, \& Hamaker, 2016, for further elaborations); (2) As was discussed in section two, the AAFBF uses a fraction \emph{b} to construct the prior (Equation 3). The sample size (N) is needed in order to derive this fraction, which is straightforward with most statistical models. However, with two-level models there is the open question about which sample size needs to be used. Should the level one observations, the level-two observations or something ``in between,'' like the effective sample (Hox, Moerbeek, \& Van de Schoot, 2017, p. 5) size be used? And most importantly, (3) which value for \emph{J} should be used in order to obtain BF's not sensitive to the prior distribution when testing equality constrained hypotheses (Hoijtink, 2021).
+Since this paper only aims to \emph{illustrate} the sensitivity of the AAFBF to the specification of the prior distribution, it was decided that: (1) overall standardization of the data (see, next section); (2) sample size equal to the level two observations will be used to compute the AAFBF using \texttt{bain} and (3) the default value for \emph{J} will be used. However, issues 1 through 3 will be addressed in the next paper, with focus especially to 2 and 3.
+
+\hypertarget{sensitivity-analysis}{%
+\section{Sensitivity analysis}\label{sensitivity-analysis}}
+
+The \texttt{tutorial} data, which is openly available within the \texttt{R} package \texttt{R2MLwiN} (Zhang, Parker, Charlton, Leckie, \& Browne, 2016), represents a subset derived from a larger data set of examination results from six London school boards. The data contains observations on 10 variables from 4059 students nested within 65 schools. In this paper the variable \emph{Exam score} serves as the outcome variable and the variables \emph{LRT score} and \emph{Average LRT} score are used as predictors, where the latter represents a level-two predictor (see, Table 1). All of the variables are standardized by the authors of the data set\footnote{This would be the same as applying \emph{overall standardization} which is currently available within the wrapper function.}.
+
+A two level model with the \texttt{lmer} function from the package \texttt{lme4} using \emph{Full Maximum Likelihood Estimation}
+(Bates, Mächler, Bolker, \& Walker, 2015) is fitted to the data:
+
+\begin{equation}
+Exam\;score_{ij} = \gamma_{00} + \gamma_{10}LRT\;score_{ij} + \gamma_{01}AvgLRT_{j} + u_{j}LRT\;score_{ij} + u_{0j} + e_{ij}
+\end{equation}
+And:
+\begin{equation*}
+u_{j}\sim N(0, \sigma_{u1}^2);\;
+u_{0j}\sim N(0, \sigma_{u0}^2);\;
+e_{ij} \sim N(0, \sigma^2_e)
+\end{equation*}
+Where:
+\begin{equation*}
+\gamma_{00}=Fixed\; intercept;\; 
+\gamma_{10}=Fixed\; slope;\;
+\gamma_{01}=Level \;2\;coefficient
+\end{equation*}
+
+The results from fitting the model specified in Equation 4 are summarized in Table 2. The fixed coefficient for the first level predictor, \emph{LRT score}, is estimated to be 0.55 and for the second level predictor, \emph{Average LRT score} it is 0.29. These two parameter estimates are used for constructing the hypotheses for the sensitivity analysis, going back to Equation 3, this would mean that \(\hat{\theta}\) is a vector containing two parameter estimates\footnote{The intercept and the random effects are treated as nuisance parameters.}.
+The \emph{null} hypotheses tested to illustrate the sensitivity issue are specified as:
+\begin{align*}
+  H_{0_1}: \gamma_{10} = \gamma_{01} = 0;\; 
+  H_{0_2}: \gamma_{10} = \gamma_{01}
+  \end{align*}
+Additionally, one informative hypothesis of the form
+\begin{align*}
+H_{i}: \gamma_{10} >0;\; 
+\gamma_{01} > 0
+\end{align*}
+is added to the sensitivity analysis with the aim to illustrate that \emph{only} null hypotheses are sensitive to the specification of the prior distribution, and not informative hypotheses (Hoijtink, 2011).
+
+Fist using the wrapper function, we test all three hypotheses (at once) against the unconstrained hypothesis applying \emph{J}=2, N = 65 (number of level 2 observations), which results in \emph{b}= 0.03, using the \emph{default} \texttt{fraction\ =\ 1}. Afterwards, the value for \texttt{fraction} is iteratively changed, taking on the values 2, 3 and 4, respectively.
+
+\begin{figure}
+\centering
+\includegraphics{Research_report_files/figure-latex/plots-1.pdf}
+\caption{\label{fig:plots}The BF's of the null hypothesis (a) and informative hypothesis (b) for different values of J}
+\end{figure}
+
+The results presented in Table 3 summarize the sensitivity issue in terms of the \emph{complexity} and \(BF's_{.u}\), for the different values of \emph{b}. First, for the (default) minimal value of b, \(BF_{0_1u} = 0\), indicates that the evidence in the data is completely in favor of the unconstrained hypothesis \(H_u\), in other words there is no evidence in the data for \(H_{0_1}\). Furthermore, \(BF_{0_2u} = 0.35\), which indicates that the data is about 2.8 times in favor of \(H_u\) compared to \(H_{0_2}\). Lastly, \(BF_{iu} = 4.21\), suggests that the data are 4 times in favor of \(H_{i}\) against \(H_u\).
+Furthermore, it can be seen that the values for the complexity (see, equation 3) for \(H_{0_1}\) and \(H_{0_2}\) increase as the value for \emph{b} changes. This is not the case with \(H_i\), where the complexity remains constant. Consequently, the resulting \(BF_{0_{2}u}\) for \(H_{0_2}\) against \(H_u\), changes from 0.35 when using 1 * \emph{b} to 0.17 when using 4 * \emph{b}. It should be noted that this is also the case with \(BF_{0_{1}u}\), however, because the value for the \emph{fit} for \(H_{0_1}\) happens to be a very small number there are not enough decimals to display the difference. The results of the sensitivity analysis are visually summarized in Figure 1, where: (a) \(BF_{0_{2}u}\) is plotted against \emph{b}; (b) \(H_i\) is plotted against \emph{b}. This clearly illustrates the sensitivity of the BF to the specification of the variance of the prior distribution (equation 3) when testing \emph{null} hypotheses in the context of \emph{two-level models}.
+
+\hypertarget{discussion}{%
+\section{Discussion}\label{discussion}}
+
+The sensitivity described in this paper, highlights the instability of the AAFBF to the specification of the value for \emph{b} and consequently for the values of \emph{J} and \emph{N} (since \(b=\frac{J}{N}\), see, second section), in the context of two-level models. This has already been discussed in other works (for example, Hoijtink, Mulder, Lissa, \& Gu, 2019) for different statistical models, and clearly represents a very undesirable characteristic of the BF. Hoijtink (2021) has addressed this issue in the context of Multiple Linear Regression, AN(C)OVA and the Welch test by comparing the operating characteristics of four default Bayes factors and choosing a so-called \emph{reference} value for \emph{J} which results in an AAFBF with a completely specified prior distribution that doesn't suffer from the aforementioned sensitivity issue. This value is derived by setting the BF to be equal to 19 in favor of the null hypothesis when the effect size in the data is zero. The motivation behind the (subjective) choice of the number 19, is inspired by the fact that: when using equal prior model probabilities (see equation 2) the posterior model probabilities equal \(P(H_0|D) = .95\) and \(P(H_1|D) = .05\), which, at least \emph{numerically}, mimics the ``conventional'' \(\alpha = .05\) in NHST.
+
+In the successor paper: (1) Two different methods of standardization will be used and their impact on the resulting BF's with respect to the other two points (2 and 3) will be discussed; (2) The issue regarding the sample size will also be addressed in detail, along with the introduction of a new method for calculating the \emph{effective sample size} in two-level models containing random slopes. This method is inspired by the concept of \emph{multiple imputation} of missing data (see, Van Buuren, 2018). In this case idea is, by using Bayesian estimation for the random effects of a two-level model, to treat the estimates for the random effects from each \(i^{th}\) sampled vector from posterior distribution as imputed missing values coming from an \(i^{th}\) imputed data set, with the aim to be able to apply the formulas given by Van Buuren (2018) and obtain the effective sample size in models having random slopes for level 1 predictors. (3) The approach given by Hoijtink (2021), will be implemented in the next paper by using, for the effect size, the partial \(R^2\) for the fixed effects, derived from a non-random approximation of the two-level model.
+
+Even though, the AAFBF can be straightforwardly used when testing inequality constrained (informative) hypotheses, which in general provide a better description of relations between parameters, there still exists the need to use null hypotheses in some specific situations (see, for example, Wainer, 1999). Also, with NHBT, one can easily quantify the support in the data \emph{in favor} of the null hypothesis (which is not possible with NHST). Thus, it is fair to argue that addressing the prior sensitivity issue of NHBT, for different statistical models, represents a worthwhile task for contemporary statisticians. Leaving this problem unaddressed might easily open the gate for questionable research practices and easily undermine the entire Bayesian approach to hypothesis testing.
+
+\newpage
+
+\hypertarget{references}{%
+\section{References}\label{references}}
+
+\FloatBarrier
+\begin{table}[ht]
+
+\centering
+
+\caption{Descriptive statistics}
+
+\label{t1}
+
+\begin{tabular}{r|rrrr}
+
+\hline
+
+ & M & SD & min & max \\
+
+\hline
+
+Exam score & 0 & 1 & -3.67 & 3.67 \\
+
+LRT score & 0 & 1 & -2.94  & 3.02 \\
+
+Avg. LRT score & 0 & 0.31 & -0.76  &  0.64 \\
+
+\hline
+
+\end{tabular}
+
+\begin{tablenotes}
+
+\item[1] M = Mean;
+\item[2] SD = Standard Deviation;
+\item[3] min =  Minimum value;
+\item[4] max = Maximum value
+\end{tablenotes}
+\end{table}
+\FloatBarrier
+
+\FloatBarrier
+\begin{table}[ht]
+
+\centering
+
+\caption{Estimates from fitting the two-level model with `lmer`}
+
+\label{t2}
+
+\begin{tabular}{r|rr|rr}
+
+\hline
+
+& \multicolumn{2}{c|}{Fixed effects} & \multicolumn{2}{c}{Random effects}\\
+
+\hline
+
+ & est & SE & var & SD \\
+
+\hline
+
+$\gamma_{00}$ & -0.001 & 0.036 & 0.074 & 0.273 \\
+
+$\gamma_{10}$ & 0.552 & 0.020 & 0.015 & .122 \\
+
+$\gamma_{01}$ & 0.295 & 0.105 & /  &  / \\
+
+\hline
+
+\end{tabular}
+
+\begin{tablenotes}
+
+\end{tablenotes}
+
+\end{table}
+\FloatBarrier
+
+\FloatBarrier 
+\begin{table}[ht]
+
+\centering
+
+\caption{Sensitivity analysis in terms of complexity and $BF_{.u}$ for $H_{0_1}$; $H_{0_2}$ and $H_{i}$}
+
+\label{t3}
+
+\begin{tabular}{r|rr|rr|rr|rr}
+
+\hline
+
+& \multicolumn{2}{c|}{$ 1 * b$} & \multicolumn{2}{c|}{$2 * b$} & \multicolumn{2}{c|}{$3 * b$} & \multicolumn{2}{c}{$4 * b$} \\
+
+\hline
+
+H  & c & $BF_{.u}$  & c & $BF_{.u}$  & c & $BF_{.u}$ & c & $BF_{.u}$ \\
+
+\hline
+
+$H_{0_1}$ & 2.31 & 0.00 & 4.61 & 0.00 & 6.92 & 0.00 & 9.23 & 0.00 \\
+
+$H_{0_2}$ & 0.64 & 0.35 & 0.91 & 0.25 & 1.11 & 0.20 & 1.28 & 0.17 \\
+
+$H_{i}$   & 0.23 & 4.21 & 0.23 & 4.21 & 0.23 & 4.21 & 0.23 & 4.21 \\
+
+\hline
+
+\end{tabular}
+
+\begin{tablenotes}
+
+\item[1] c = complexity
+
+\end{tablenotes}
+
+\end{table}
+\FloatBarrier
+
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\hypertarget{ref-lme4}{}%
+Bates, D., Mächler, M., Bolker, B., \& Walker, S. (2015). Fitting linear mixed-effects models using {lme4}. \emph{Journal of Statistical Software}, \emph{67}(1), 1--48. \url{https://doi.org/10.18637/jss.v067.i01}
+
+\leavevmode\hypertarget{ref-cohen1994earth}{}%
+Cohen, J. (1994). The earth is round (p\textless. 05). \emph{American Psychologist}, \emph{49}(12), 997.
+
+\leavevmode\hypertarget{ref-bain}{}%
+Gu, X., Hoijtink, H., Mulder, J., \& van Lissa, C. J. (2021). \emph{Bain: Bayes factors for informative hypotheses}. Retrieved from \url{https://CRAN.R-project.org/package=bain}
+
+\leavevmode\hypertarget{ref-gu2018approximated}{}%
+Gu, X., Mulder, J., \& Hoijtink, H. (2018). Approximated adjusted fractional bayes factors: A general method for testing informative hypotheses. \emph{British Journal of Mathematical and Statistical Psychology}, \emph{71}(2), 229--261.
+
+\leavevmode\hypertarget{ref-hoijtink2011informative}{}%
+Hoijtink, H. (2011). \emph{Informative hypotheses: Theory and practice for behavioral and social scientists}. CRC Press.
+
+\leavevmode\hypertarget{ref-hoijtink2021prior}{}%
+Hoijtink, H. (2021). Prior sensitivity of null hypothesis bayesian testing. \emph{Psychological Methods}.
+
+\leavevmode\hypertarget{ref-hoijtink2019bayesian}{}%
+Hoijtink, H., Gu, X., \& Mulder, J. (2019). Bayesian evaluation of informative hypotheses for multiple populations. \emph{British Journal of Mathematical and Statistical Psychology}, \emph{72}(2), 219--243.
+
+\leavevmode\hypertarget{ref-hoijtink2019tutorial}{}%
+Hoijtink, H., Mulder, J., Lissa, C. van, \& Gu, X. (2019). A tutorial on testing hypotheses using the bayes factor. \emph{Psychological Methods}, \emph{24}(5), 539.
+
+\leavevmode\hypertarget{ref-hox2017multilevel}{}%
+Hox, J. J., Moerbeek, M., \& Van de Schoot, R. (2017). \emph{Multilevel analysis: Techniques and applications}. Routledge.
+
+\leavevmode\hypertarget{ref-jeffreys1935some}{}%
+Jeffreys, H. (1935). Some tests of significance, treated by the theory of probability. In \emph{Mathematical proceedings of the cambridge philosophical society} (Vol. 31, pp. 203--222). Cambridge University Press.
+
+\leavevmode\hypertarget{ref-jones2015normal}{}%
+Jones, J. A., \& Waller, N. G. (2015). The normal-theory and asymptotic distribution-free (ADF) covariance matrix of standardized regression coefficients: Theoretical extensions and finite sample behavior. \emph{Psychometrika}, \emph{80}(2), 365--378.
+
+\leavevmode\hypertarget{ref-kass1995bayes}{}%
+Kass, R. E., \& Raftery, A. E. (1995). Bayes factors. \emph{Journal of the American Statistical Association}, \emph{90}(430), 773--795. \url{https://doi.org/10.1080/01621459.1995.10476572}
+
+\leavevmode\hypertarget{ref-mulder2014prior}{}%
+Mulder, J. (2014). Prior adjusted default bayes factors for testing (in) equality constrained hypotheses. \emph{Computational Statistics \& Data Analysis}, \emph{71}, 448--463.
+
+\leavevmode\hypertarget{ref-schuurman2016compare}{}%
+Schuurman, N. K., Ferrer, E., Boer-Sonnenschein, M. de, \& Hamaker, E. L. (2016). How to compare cross-lagged associations in a multilevel autoregressive model. \emph{Psychological Methods}, \emph{21}(2), 206.
+
+\leavevmode\hypertarget{ref-tendeiro2019review}{}%
+Tendeiro, J. N., \& Kiers, H. A. (2019). A review of issues about null hypothesis bayesian testing. \emph{Psychological Methods}, \emph{24}(6), 774.
+
+\leavevmode\hypertarget{ref-van2018flexible}{}%
+Van Buuren, S. (2018). \emph{Flexible imputation of missing data}. CRC press.
+
+\leavevmode\hypertarget{ref-wagenmakers2007practical}{}%
+Wagenmakers, E.-J. (2007). A practical solution to the pervasive problems of p values. \emph{Psychonomic Bulletin \& Review}, \emph{14}(5), 779--804.
+
+\leavevmode\hypertarget{ref-wainer1999one}{}%
+Wainer, H. (1999). One cheer for null hypothesis significance testing. \emph{Psychological Methods}, \emph{4}(2), 212.
+
+\leavevmode\hypertarget{ref-R2MLwiN}{}%
+Zhang, Z., Parker, R. M. A., Charlton, C. M. J., Leckie, G., \& Browne, W. J. (2016). {R2MLwiN}: A package to run {MLwiN} from within {R}. \emph{Journal of Statistical Software}, \emph{72}(10), 1--43. \url{https://doi.org/10.18637/jss.v072.i10}
+
+\end{CSLReferences}
+
+\endgroup
+
+
+\end{document}

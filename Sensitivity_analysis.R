@@ -10,6 +10,7 @@ library(bain) #the wrapper function does not work without loading bain
 source("wrapper_function.R") # load the wrapper function
 library(lme4) #for multilevel modeling
 library(jtools) #for nice summaries of lmer objects
+library(psych) #for nice descriptives
 
 
 # Load the data -----------------------------------------------------------
@@ -24,6 +25,9 @@ dat <- read.spss(file = "exam.sav", to.data.frame = T)
 #library(R2MLwiN)
 #data(tutorial)
 
+# Descriptive statistics  -------------------------------------------------
+
+describe(dat)
 
 # Fit the two-level models using lmer -------------------------------------
 
@@ -34,8 +38,8 @@ summ(x)  #for nicer output
 
 
 
-# Use the wrapper to test the hypotheses using the default value for J=1 ----------
-
+# Use the wrapper to test the hypotheses using the default value for b ----------
+# In this case 1*b (where b = 2/65 = 0.03)
 mlm_bain_std(x, "LRTscore = AvsLRT = 0;
          LRTscore = AvsLRT; LRTscore > 0 & AvsLRT >0", 
              fraction = 1, standardize = FALSE, seed = 123)
@@ -43,15 +47,15 @@ mlm_bain_std(x, "LRTscore = AvsLRT = 0;
 
 # SENSITIVITY ANALYSIS ---------------------------------------------------
 
-# J = 2
+# 2 * b
 mlm_bain_std(x, "LRTscore = AvsLRT = 0;
          LRTscore = AvsLRT; LRTscore > 0 & AvsLRT >0", 
              fraction = 2, standardize = FALSE, seed = 123)
-# J = 3
+# 3 * b
 mlm_bain_std(x, "LRTscore = AvsLRT = 0;
          LRTscore = AvsLRT; LRTscore > 0 & AvsLRT >0", 
              fraction = 3, standardize = FALSE, seed = 123)
-# J = 4
+# 4 * b
 mlm_bain_std(x, "LRTscore = AvsLRT = 0;
          LRTscore = AvsLRT; LRTscore > 0 & AvsLRT >0", 
              fraction = 4, standardize = FALSE, seed = 123)
@@ -64,11 +68,10 @@ BF_i <- rep(4.21, 4)
 
 # plot
 par(mfrow = c(1, 2)) 
-plot(BF_o, type = "l",  xaxt = "n", xlab = "J", yaxt = "n", ylab = "BF", main = "a")
+plot(BF_o, type = "l",  xaxt = "n", xlab = "times b", yaxt = "n", ylab = "BF", main = "a")
 axis(1, at = 1:4)
 axis(2, at = BF_o)
-plot(BF_i, type = "l", xaxt = "n", yaxt = "n", xlab = "J", ylab = "BF", main = "b")
-axis(1, at = 1:4, tick =T)
+plot(BF_i, type = "l", xaxt = "n", yaxt = "n", xlab = "times b", ylab = "BF", main = "b")
 axis(1, at = 1:4)
 axis(2, at = BF_i)
 
