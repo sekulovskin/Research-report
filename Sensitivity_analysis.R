@@ -15,7 +15,7 @@ library(psych) #for nice descriptives
 
 # Load the data -----------------------------------------------------------
 
-dat <- read.spss(file = "exam.sav", to.data.frame = T)
+dat <- read.spss(file = "tutorial.sav", to.data.frame = T)
 
 #Additionally the data can be loaded directly from the `R2MLwiN` package, BUT NOTE
 # in this case the data would contain many more variables (not used in this analysis)
