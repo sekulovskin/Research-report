@@ -11,7 +11,7 @@ This repository containts:
  - `Research-report.pdf` a ready to read version of the paper.
 
 ## Instructions:
-Download the repository as a `zip` folder, extract it, store it on your local computer and then run the `Sensitivity_analysis.R` scripit (don't forget to set the working directory where the other two remaining files are stored, otherwise the code won't run).
+Download the repository as a `zip` folder, extract it, store it on your local computer and then run the `Sensitivity_analysis.R` scripit (don't forget to set the working directory where the other two remaining files are stored, otherwise the code will not run).
 
 
 Please note, if you wish to obtan the data directly from the `R2MLwiN` package, you are required to use the variable names specified in that version of the data (this is also noted in `Sensitivity_analysis.R`), thus you are advised to use the provided version of the dataset. It is still the same data set, the only difference is that the `tutorial.sav` data available in this repository, only containts the (renamed) variables used for the purpose of the analysis.
