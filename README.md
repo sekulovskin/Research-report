@@ -1,6 +1,6 @@
 # Research-report
  
-This repository contains all of the necessary code to fully reproduce the results presented in the paper: **Research Report: Prior Sensitivity of Null Hypothesis Bayesian Testing in the Context of Two-level Models**
+This repository contains all of the necessary code to fully reproduce the results presented in the paper: **Research Report**: ***Prior Sensitivity of Null Hypothesis Bayesian Testing in the Context of Two-level Models***
 
 ## Content:
 This repository containts: 
