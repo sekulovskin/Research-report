@@ -7,7 +7,7 @@ This repository containts:
  - the data stored as  `tutorial.sav`; 
  - `wrapper_function.R`, containing the programmed wrapper for testing hypotheses for the parameters of two-level models, using the `R` package `bain`;
  - `Sensitivity_analysis.R` containining the code for the *senitivity analysis* (including the plot presented in the paper);
- - `Research-report.RMD` containing the entire markup manuscript for the paper;
+ - `Research-report.RMD` containing the markup manuscript for the paper;
  - `Research-report.pdf` a ready to read version of the paper.
 
 ## Instructions:
