@@ -3,7 +3,7 @@
 This repository contains all of the necessary code to fully reproduce the results presented in the paper: **Research Report**: ***Prior Sensitivity of Null Hypothesis Bayesian Testing in the Context of Two-level Models***
 
 ## Content:
-This repository containts: 
+
  - the data stored as  `tutorial.sav`; 
  - `wrapper_function.R`, containing the programmed wrapper for testing hypotheses for the parameters of two-level models, using the `R` package `bain`;
  - `Sensitivity_analysis.R` containining the code for the *senitivity analysis* (including the plot presented in the paper);
