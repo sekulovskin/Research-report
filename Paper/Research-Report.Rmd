@@ -1,0 +1,301 @@
+---
+title             : |
+ | **Research Report:**
+ | 
+ | ***Prior Sensitivity of Null Hypothesis Bayesian Testing in the Context of Two-level Models***
+author: 
+ - "*Author:* Nikola Sekulovski (6465588)" 
+ - "*Supervisor:* prof. dr. Herbert Hoijtink"
+bibliography      : ["refs.bib"]
+csl: apa-old-doi-prefix.csl
+output: pdf_document
+fontsize: 11pt
+spacing: double
+header-includes:
+    - \usepackage{setspace}\doublespacing
+    - \usepackage{booktabs}
+    - \usepackage{sectsty} \sectionfont{\centering}
+    - \usepackage[bottom]{footmisc}
+---
+```{r setup, include = FALSE}
+library(kableExtra)
+options(knitr.table.format = "latex")
+```
+\pagenumbering{arabic}
+\setcounter{page}{0}
+\thispagestyle{empty}
+\pagestyle{plain}
+\begin{center}
+Department of Methodology and Statistics, Utrecht University
+\end{center}  
+\begin{center}
+December 2021
+\end{center}
+
+
+This *Research Report* is written as a “mini-thesis,” intended to serve as an
+introduction paper to the Master’s Thesis. Preferred journals for publication (of the
+Master’s Thesis) might include (among other): *Psychological Methods* and *British Journal
+of Mathematical and Statistical Psychology*.
+
+*Word count:* 2515 (excluding: references, title page, tables and figures).
+
+Correspondence concerning this article should be addressed to n.sekulovski@uu.nl.
+
+|
+|
+|
+|
+|
+|
+|
+|
+
+*Keywords*: Bayes Factor, Two-level Models, Null Hypotheses, Prior Sensitivity.
+
+\newpage
+
+# Introduction 
+
+Following an increasing wave of criticism directed towards *Null Hypothesis Significance Testing (NHST)* [@cohen1994earth; @wagenmakers2007practical], the Bayesian approach to evaluating hypotheses, epitomized by the *Bayes Factor* [abbreviated as *BF*, @jeffreys1935some] is gaining momentum. This paradigm, at least compared to NHST, is said to give more intuitive results and, most importantly, does not rely on strict cutoff values such as the often vilified $"\alpha = .05"$ [see, for example, @hoijtink2019tutorial for further elaborations on the strengths of the BF]. However, novel statistical methods should not be taken for granted, and their drawbacks should always be considered and, hopefully, addressed. Hence, the main topic of this paper, which is to *illustrate* the sensitivity of the BF, to the specification of the prior distribution, when evaluating null hypotheses *in the context of (linear) two-level models*.^[Hypotheses that impose equality and/or about-equality constraints between the parameters of a statistical model.]
+
+*Multilevel models* are useful when the data has a hierarchical structure, for example, when individuals are nested within groups. This allows the researcher to take the within-group dependence into account. In such models, variables can be defined at different levels. *Two-level models* are the most common (and simple) example, with applications ranging from organizational research (e.g., employees nested within companies) to longitudinal studies (e.g., observations nested within individuals). The focus of this paper is on *linear* two-level models i.e., models that have a continuous dependent variable [see, for example, @hox2017multilevel].
+
+This brief paper is intended to serve as a predecessor to a more detailed paper that will aim to *address* the sensitivity of the BF in two-level models, based on the work presented in @hoijtink2021prior. Throughout the text, the application of the BF in evaluating *null hypotheses* is referred to as *Null Hypotheses Bayesian Testing (NHBT)*, a term also used in @hoijtink2021prior, which was first introduced by @tendeiro2019review.
+
+The article is divided as follows. In the next section, the mathematical definition of the BF is briefly introduced, followed by the introduction of the *Approximated Adjusted Fractional Bayes Factor* [*AAFBF*, @gu2018approximated]. Afterwards, the `R` package `bain` [@bain] is presented as the basis for describing a `wrapper function`, specifically programmed for the aims of this study. Two additional issues that will be addressed in the successor paper, specific to multilevel models, are briefly mentioned in this section. In the section that follows afterwards, the prior sensitivity of the BF is illustrated using an openly available, two-level, data set and the aforementioned `wrapper function`. This article concludes with a discussion section, setting the stage for the work that will follow. All of the necessary code, to fully reproduce the results, can be obtained from the author's `GitHub` profile.^[See, [\textcolor{blue}{this}](https://github.com/sekulovskin/Research-report) link for direct access to the `GitHub` repository.]
+ 
+
+# The Bayes Factor
+
+The *Bayes Factor* [@kass1995bayes] is defined as the ratio of two marginal likelihoods (see, Equation 1). @tendeiro2019review define the marginal likelihood as: "...weighted average of the likelihood over the observed data, where the weights are provided by the (within) priors". 
+
+\begin{equation}
+BF_{0,1} = \frac{P(D|H_0)}{P(D|H_1)} = \frac{\int P(D|\theta_{H_0}, H_0) P(\theta|H_0) d\theta_{H_0}}{\int P(D|\theta_{H_1}, H_1) P(\theta|H_1) d\theta_{H_1}}.
+\end{equation}
+
+The definition given in Equation 1 has two important aspects: (1) It defines the marginal likelihood as the denominator of Bayes' rule when used in the context of model (parameter) estimation. (2) It stresses the role of the prior distribution on the marginal likelihood and consequently on the value of the BF itself. This second aspect is the overall reason why the BF is sensitive to the specification of the prior distribution. 
+
+Furthermore, the BF can be seen as a multiplicative factor that transforms the prior odds of two hypotheses to the posterior odds, after seeing the data (Equation 2). However, if the prior odds of the hypotheses are set to equal one, by setting the prior probabilities of both hypotheses equal to each other, then the BF will be equal to the posterior odds [@kass1995bayes].^[Not to be confused with prior distributions used in model estimation, which are of main interest in this paper.]
+
+\begin{equation}
+\frac{P(H_0|D)}{P(H_1|D)} = BF_{0,1} * \frac{P(H_0)}{P(H_1)}.
+\end{equation}
+\newpage
+Straightforward calculation of the BF, based on its pure mathematical definition, presented in Equation 1, is impossible in most applied (multi-parameter) situations. However, when testing null (and informative) hypotheses, Equation 1 can be written as Equation 3. Thus, translating the BF into a so-called *Approximated Adjusted Fractional Bayes Factor*, which is defined as the ratio of the *fit* and *complexity* of a hypothesis 
+[for a full proof of this BF see, @mulder2014prior; @gu2018approximated; @hoijtink2019bayesian].^[Throughout the remaining parts of this text, the terms BF and AAFBF are used interchangeably.] When testing hypotheses containing equality constraints: *fit* ($f_0$) is the density of the *posterior* distribution supported by the hypothesis at hand; and *complexity* ($c_0$) is the density of the *prior* distribution supported by the hypothesis at hand [@hoijtink2019tutorial].^[When testing inequality constrained hypotheses instead of densities, the *fit* and *complexity* represent proportions.]
+
+\begin{equation}
+AAFBF_{0u} = \frac{f_0}{c_0} = \frac{\int_{\theta \in \Theta_0}\mathcal{N}(\boldsymbol{\hat{\theta}},\boldsymbol{\hat{\Sigma_{\theta}}})d\theta}{\int_{\theta \in \Theta_0}\mathcal{N}(0,\boldsymbol{\hat{\Sigma_{\theta}}}/b)d\theta}.
+\end{equation}
+
+In Equation 3, $\boldsymbol{\hat{\theta}}$ represents a vector of estimated parameters and $\boldsymbol{\hat{\Sigma_{\theta}}}$ represents its respective covariance matrix. It is important to stress that the AAFBF is calculated for each hypothesis against the unconstrained hypothesis or its complement [see, @hoijtink2019tutorial]. However, in the case of null hypotheses, these are the same. For example, a $BF_{0u} = 5$ would mean that the data is five times in favour of $H_0$ compared to the *unconstrained* hypothesis (see, @kass1995bayes or @hoijtink2019tutorial, for further guidelines).
+
+This BF uses a fraction $b = \frac{J}{N}$ (see, Equation 3) of the information in the data to construct the scaling parameter of the prior distribution, where *N* represents the sample size and *J* usually denotes the number of independent constraints in the hypothesis. We will return to the values of *J*, *N* and subsequently *b* in the following sections, since they are directly linked to the sensitivity of this BF. It should be noted that in the denominator of Equation 3,  the mean of the normal approximation of the prior distribution,  $\mathcal{N}(0,\boldsymbol{\hat{\Sigma_{\theta}}}/b)$, is zero *only* in the case when testing hypotheses where all parameters are equal to zero (i.e., $\theta_1 = \theta_2 = 0$). In a situation when testing whether the parameters are equal to each other (i.e., $\theta_1 = \theta_2$) the mean represents the mean value of the differences between the parameters, there are also many other situations (especially with regards to informative hypotheses), and the interested reader is referred to @gu2018approximated.
+
+
+# Software  
+
+The `R` package `bain` (*Ba*yesian *in*formative hypothesis evaluation), computes the AAFBF of a hypothesis against its complement or the unconstrained hypothesis, using only the estimated parameters and their respective covariance matrix [@bain].^[Obtained by using standard statistical software packages, which usually apply some form of Maximum Likelihood Estimation.] A so-called `wrapper function`^[See, [\textcolor{blue}{this}](https://en.wikipedia.org/wiki/Wrapper_function) link for a definition of `wrapper functions`.] was programmed specifically for the aims of this (and the following) paper, to conveniently use `bain` when testing hypotheses about the *fixed* parameters of *two-level models* built with the `lmer` function from the `R` package `lme4` [@lme4]. The function takes an argument `fraction` which specifies the size of the minimal fraction *b*.
+
+While programming this function, two questions specific to multilevel models, in addition to the sensitivity issue arose: (1) When testing equality constrained hypotheses of the form: $\theta_1 = \theta_2$ i.e., when comparing whether the parameters are equal to each other, it only makes sense to test the *standardized* coefficients. However, standardizing the (fixed) parameters of a multilevel model is not straightforward. First, we cannot use the standardized regression coefficients (like the $\beta's$ in multiple regression) directly, since there exists no way of obtaining their respective *standardized* covariance matrix. Secondly, when standardizing the data beforehand (which directly results in standardized coefficients), there remains an open question of whether to use, so-called, *overall standardization* or *within-group standardization* [see, @schuurman2016compare]. (2) Since the sample size (N) is required to derive the fraction *b* (Equation 3), it is unclear whether to use the level one observations, the level-two observations or something "in-between", like effective sample size [@hox2017multilevel, p. 5].
+
+Since this paper only aims to *illustrate* the sensitivity of the AAFBF to the specification of the prior distribution, it was decided that overall standardization of the data and a sample size equal to the level two observations will be used to compute the BF's.
+
+# Sensitivity Analysis
+
+The `tutorial` data, which is openly available within the `R` package `R2MLwiN` [@R2MLwiN], represents a subset derived from a larger data set of examination results from six London school boards. The data contains observations on 10 variables from 4059 students nested within 65 schools. In this paper, the variable *Exam score* serves as the outcome variable and the variables *LRT score* and *Average LRT* score are used as predictors, where the latter represents a level-two predictor. All of the variables were standardized by the authors of the data set (Table 1).^[This would be the same as applying *overall standardization* which is currently available within the wrapper function.]
+
+
+\begin{table}[ht]
+
+\centering
+
+\caption{Descriptive Statistics}
+
+\label{t1}
+
+\begin{tabular}{r|rrrr}
+
+\hline
+
+ & M & SD & min & max \\
+
+\hline
+
+Exam score & 0 & 1 & -3.67 & 3.67 \\
+
+LRT score & 0 & 1 & -2.94  & 3.02 \\
+
+Avg. LRT score & 0 & 0.31 & -0.76  &  0.64 \\
+
+\hline
+
+\end{tabular}
+\begin{tablenotes}
+
+\item[1] M = Mean
+\item[2] SD = Standard Deviation
+\item[3] min =  minimum value
+\item[4] max = maximum value
+\end{tablenotes}
+\end{table}
+
+
+A two-level model, with the `lmer` function from the package `lme4` using *Full Maximum Likelihood Estimation* [@lme4], is fitted to the data:
+
+\begin{equation}
+Exam\;score_{ij} = \gamma_{00} + \gamma_{10}LRT\;score_{ij} + \gamma_{01}AvgLRT_{j} + u_{1j}LRT\;score_{ij} + u_{0j} + e_{ij},
+\end{equation}
+with,
+\begin{equation*}
+\boldsymbol{U}\sim \mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma}),\;
+e_{ij} \sim \mathcal{N}(0, \sigma^2_e).
+\end{equation*}
+Where,
+\begin{equation*}
+\boldsymbol{U} = \{u_{1j}, u_{0j}\},\;
+\boldsymbol{\mu} =
+\begin{pmatrix}
+0 \\
+0 \;
+\end{pmatrix},
+\boldsymbol{\Sigma} =
+\begin{pmatrix}
+\sigma^2_{u1} & \sigma^2_{u1,u0} \\
+\sigma^2_{u1,u0} & \sigma^2_{u0}
+\end{pmatrix}.
+\end{equation*}
+
+Here $\gamma_{00}$, $\gamma_{10}$ and $\gamma_{01}$ represent the fixed intercept, fixed slope and level 2 coefficient, respectively. The terms $u_{1j}$, $u_{0j}$ represent the random effects for the slope and the intercept, respectively, having a bivariate normal distribution with a mean vector ($\boldsymbol{\mu}$) and a covariance matrix ($\boldsymbol{\Sigma}$). Where $\sigma^2_{u1}$ represents the variance of the slope, $\sigma^2_{u0}$ represents the variance of the intercept, and $\sigma^2_{u1,u0}$ represents their covariance. Finally, $e_{ij}$ is the residual term, normally distributed with a mean of zero and variance $\sigma^2_{e}$. 
+
+The results from fitting the model specified in Equation 4 are summarized in Table 2. The fixed coefficient for the first level predictor, *LRT score*, is estimated to be 0.55 and for *Average LRT score* the estimated, level-2 coefficient, is 0.29. Going back to Equation 3, this would mean that  $\boldsymbol{\hat{\theta}}$ is a vector containing two parameter estimates.^[The intercept and the random effects are treated as nuisance parameters.] These two parameters are used in constructing the hypotheses for the sensitivity analysis.
+
+\begin{table}[ht]
+
+\centering
+
+\caption{Estimates from fitting the two-level model with `lmer`}
+
+\label{t2}
+
+\begin{tabular}{r|rr|rr}
+
+\hline
+
+& \multicolumn{2}{c|}{Fixed effects} & \multicolumn{2}{c}{Random effects}\\
+
+\hline
+
+ & est & SE & var & SD \\
+
+\hline
+
+$\gamma_{00}$ & -0.001 & 0.036 & 0.074 & 0.273 \\
+
+$\gamma_{10}$ & 0.552 & 0.020 & 0.015 & .122 \\
+
+$\gamma_{01}$ & 0.295 & 0.105 & /  &  / \\
+
+\hline
+
+\end{tabular}
+
+\begin{tablenotes}
+
+\item[1] est = (Full) Maximum Likelihood Estimate
+\item[2] SE = Standard Error
+\item[3] var = Variance of the random effects
+\item[4] SD = Standard Deviation of the random effects (i.e., $\sqrt{var}$)
+
+\end{tablenotes}
+
+\end{table}
+
+The *null* hypotheses tested to illustrate the sensitivity issue are specified as 
+\begin{align*}
+H_{0_1}: \gamma_{10} = \gamma_{01} = 0\; and \;
+H_{0_2}: \gamma_{10} = \gamma_{01}.
+\end{align*}
+Additionally, one informative hypothesis of the form
+\begin{align*}
+H_{i}: \gamma_{10} >0;\; 
+\gamma_{01} > 0,
+\end{align*}
+is added to the analysis to illustrate that *only* null hypotheses are sensitive to the specification of the prior distribution [@hoijtink2011informative]. 
+
+ First, using the wrapper function, we test all three hypotheses (at once) against the unconstrained hypothesis, applying *J* = 2, *N* = 65 (number of level 2 observations), which results in *b* = 0.03, setting the argument `fraction = 1`. Afterwards, the number in `fraction` is iteratively changed, taking on the values 2, 3 and 4, respectively.
+The results presented in Table 3 summarize the sensitivity issue in terms of the *complexity (c)* and $BF's_{.u}$, for the values of *b*.^[The values for the *fit* are not presented, since they do not depend on the prior (see, Equation 3).] First, for the minimal value of *b*, the resulting $BF_{0_1u} = 0$ indicates that the evidence in the data is completely in favour of the unconstrained hypothesis $H_u$, in other words, there is no evidence in the data for $H_{0_1}$. Furthermore, $BF_{0_2u} = 0.35$ indicates that the data is about 2.8 times in favour of $H_u$ compared to $H_{0_2}$. Lastly, $BF_{iu} = 4.21$ suggests that the data are 4 times in favour of $H_{i}$ against $H_u$.
+Moreover, it can be seen that the values for the complexity (see, Equation 3) for $H_{0_1}$ and $H_{0_2}$ increase as the value for *b* changes. This is not the case with $H_i$, where the complexity remains constant, clearly illustrating that only *null* hypotheses are sensitive to the specification of the fraction *b*. Consequently, only the resulting $BF_{0_{2}u}$ changes from 0.35 when using 1 * *b* to 0.17 when using 4 * *b*. It should be noted that this is also the case with $BF_{0_{1}u}$, however, because the value of the *fit* for $H_{0_1}$  happens to be a very small number there are not enough decimals to display this difference. The results of the sensitivity analysis are visually summarized in Figure 1, where, (a) $BF_{0_{2}u}$ and (b) $BF_{iu}$, are plotted against the different values for *b*.
+
+\begin{table}[ht]
+
+\centering
+
+\caption{Sensitivity analysis in terms of complexity and $BF_{.u}$ for $H_{0_1}$; $H_{0_2}$ and $H_{i}$}
+
+\label{t3}
+
+\begin{tabular}{r|rr|rr|rr|rr}
+
+\hline
+
+& \multicolumn{2}{c|}{$ 1 * b$} & \multicolumn{2}{c|}{$2 * b$} & \multicolumn{2}{c|}{$3 * b$} & \multicolumn{2}{c}{$4 * b$} \\
+
+\hline
+
+H  & c & $BF_{.u}$  & c & $BF_{.u}$  & c & $BF_{.u}$ & c & $BF_{.u}$ \\
+
+\hline
+
+$H_{0_1}$ & 2.31 & 0.00 & 4.61 & 0.00 & 6.92 & 0.00 & 9.23 & 0.00 \\
+
+$H_{0_2}$ & 0.64 & 0.35 & 0.91 & 0.25 & 1.11 & 0.20 & 1.28 & 0.17 \\
+
+$H_{i}$   & 0.23 & 4.21 & 0.23 & 4.21 & 0.23 & 4.21 & 0.23 & 4.21 \\
+
+\hline
+
+\end{tabular}
+
+\begin{tablenotes}
+
+\item[1] c = complexity
+
+\item[2] $BF_{.u}$ = BF of the hypothesis at hand against the unconstrained hypothesis
+
+\item[3] $H_{0_1}: \gamma_{10} = \gamma_{01} = 0,\; H_{0_2}: \gamma_{10} = \gamma_{01},$
+$H_{i}:\gamma_{10} >0; \gamma_{01} > 0$
+
+\end{tablenotes}
+
+\end{table}
+
+```{r BF, include=FALSE}
+BF_o <- c(0.35, 0.25, 0.20, 0.17)
+BF_i <- rep(4.21, 4)
+```
+
+```{r plots, echo=FALSE,out.width= "70%",fig.align = 'center', fig.cap= "(a) $BF_{0_{2}u}$ and (b) $BF_{iu}$, for different values of the fraction $b$ (i.e., $1*b, 2*b, 3*b$ and $4*b$)"}
+par(mfrow = c(1, 2)) 
+plot(BF_o, type = "l",  xaxt = "n", xlab = "times b", yaxt = "n", ylab = "BF", main = "(a)")
+axis(1, at = 1:4)
+axis(2, at = BF_o)
+plot(BF_i, type = "l", xaxt = "n", yaxt = "n", xlab = "times b", ylab = "BF", main = "(b)")
+axis(1, at = 1:4)
+axis(2, at = BF_i)
+```
+
+# Discussion
+ 
+ The sensitivity described in this paper highlights the instability of the AAFBF to the specification of the values for *J* and *N* and, consequently, to the value of *b* (since, $b=\frac{J}{N}$), in the context of two-level models. This has already been discussed for other statistical models [for example, @hoijtink2019tutorial], and represents an undesirable characteristic of the BF.
+ 
+@hoijtink2021prior has addressed this issue in the context of Multiple Linear Regression, AN(C)OVA and the Welch test by choosing a so-called *reference* value for *J* which results in a BF with a completely specified prior distribution that doesn’t suffer from the aforementioned sensitivity issue. This value is derived by setting the BF to be equal to 19 in favour of the null hypothesis when the effect size in the data is zero. The motivation behind the (subjective) choice of the number 19 is inspired by the fact that, when using equal prior model probabilities (see, Equation 2), the posterior model probabilities are $P(H_0|D) = .95$ and $P(H_1|D) = .05$ which, *numerically*, mimics the conventional $\alpha = .05$ in NHST.
+
+In the successor paper: (1) Two different methods of standardization will be used and their impact on the resulting BF's will be discussed. (2) The question regarding the sample size will be addressed in detail, along with the introduction of a new method for calculating the *effective sample size* in two-level models containing random slopes. This method is inspired by the concept of *multiple imputation* of missing data [@van2018flexible]. By using Bayesian estimation of a two-level model, and treating the (posterior) estimates for the random and fixed effects from each $i^{th}$ (MCMC) sampled vector as imputed missing values coming from an $i^{th}$ imputed data set and applying the formulas given in Chapter 2.3 by @van2018flexible, the aim is to obtain an estimate for the effective sample size in models containing random slopes. (3) Most importantly, the approach given by @hoijtink2021prior, will be implemented to calculate the new (*reference*) values for *J* and *b* using the sample size and the number of (fixed) coefficients. The derived *reference* value for *b* will be used to calculate BF's for *null* hypotheses with `bain`.
+
+Even though, the AAFBF can straightforwardly be used when testing inequality constrained (informative) hypotheses, which in general provide a better description of relations between parameters, there still exists the need to use null hypotheses in some specific situations [see, for example, @wainer1999one]. Also, with NHBT, one can easily quantify the support in the data *in favour* of the null hypothesis (which is not possible with NHST). Thus, it is fair to argue that addressing the prior sensitivity of NHBT, for different statistical models, represents a worthwhile task for contemporary statisticians. Leaving this problem unsolved can easily open the gate to questionable research practices which would, undoubtedly, undermine the Bayesian approach to Hypothesis Testing.  
+
+\newpage
+
+# References
