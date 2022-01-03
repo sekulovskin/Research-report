@@ -1,6 +1,21 @@
+# ======================================================
+#Wrapper function for testing the (fixed) parameters of
+#two level `lmer` models using `bain`
+
+# x <- fitted 'lmer' model
+# hypotheses <- specified hypotheses for bain (see:https://cran.r-project.org/web/packages/bain/vignettes/Introduction_to_bain.html)
+# fraction <- size (multiplicative factor) of the minimal fraction b
+# Standardize <- when set to TRUE, applies overall data standardization
+# N sample size to be used. Options: 1) N = "level_1" - uses the level 1 observations;
+# 2) N = "level_2" - uses the level 2 observations; 3) N = "ICC_effective" - uses the effective sample size
+# based on the 'ICC approach' (see, for example, https://www.healthknowledge.org.uk/public-health-textbook/research-methods/1a-epidemiology/clustered-data)
+# 4) N = number - the users can specify the sample size to be used themselves (this is useful when using the 'multiple imputation approach' to the effective sample size)
+# seed <- setting the value for the random seed (users are advised to run the analysis with two random seeds, in order to ensure stability of the results)
+#======================================================
+
 bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE, 
-                       N = c("level_1", "level_2", "ICC_effective"), seed){
- 
+                       N, seed){
+  
   n_vas <- names(x@frame) #extract names of all variables in the data
   estimates <- coef(x) #extract the ML (unstandardized) "random" effects 
   estimates <- as.data.frame(estimates[[1]])
@@ -8,124 +23,25 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
   
   #--------------------------------------
   
-if(N == "level_1"){
+  if(N == "level_1"){
     
     N <- nrow(x@frame) #sample size = level 1 observations
     
-  if(standardize == FALSE){ 
+    if(standardize == FALSE){ 
       
-       #Unstandardized data
-       fixed_estimates <- apply(estimates, 2, mean) # obtain fix effects 
-       cov <- as.matrix(vcov(x)[-1, -1]) #obtain the covariance matrix of the 
-       #--------------------------------------
-      
-       set.seed(seed)
-       results <- bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
-                      group_parameters = 0, 
-                      joint_parameters = length(estimates), 
-                      fraction = fraction)
-    }
-    
-    else{
-      
-        #Overall standardization of the data "overall predictors"`
-        standardized <- apply(x@frame, 2, scale)
-        standardized <- as.data.frame(standardized)
-        standardized[, ncol(standardized)] <- x@frame[ , ncol(x@frame)] #group
-        names(standardized) <- n_vas #add the same names
-        s <- lmer(x@call$formula, data = standardized, REML = FALSE)
-        estimates_s <- coef(s) #extract the ML (unstandardized) "random" effects 
-        estimates_s <- as.data.frame(estimates_s[[1]])
-        estimates_s <- estimates_s[ , -1] #remove the intercept
-        fixed_estimates_s <- apply(estimates_s, 2, mean) # obtain fix effects 
-        #names(fixed_estimates_s) <- n #add names
-        cov_s <- as.matrix(vcov(s)[-1, -1]) #obtain the covariance matrix of the 
-        #--------------------------------------
-        
-        set.seed(seed)
-        results <- bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
-                        group_parameters = 0, joint_parameters = length(estimates), 
-                        fraction = fraction)
-    }
-    
-  }
-  
-  
-if(N == "level_2"){
-    
-    N <- nrow(coef(x)[[1]]) #sample size = level 2 observations
-    
-  if(standardize == FALSE){ 
-      
-        #Unstandardized data
-        estimates <- coef(x) #extract the ML (unstandardized) "random" effects 
-        estimates <- as.data.frame(estimates[[1]])
-        estimates <- estimates[ , -1] #remove the intercept
-        fixed_estimates <- apply(estimates, 2, mean) # obtain fix effects 
-        cov <- as.matrix(vcov(x)[-1, -1]) #obtain the covariance matrix of the 
+      #Unstandardized data
+      fixed_estimates <- apply(estimates, 2, mean) # obtain fix effects 
+      cov <- as.matrix(vcov(x)[-1, -1]) #obtain the covariance matrix of the 
       #--------------------------------------
       
-        set.seed(seed)
-        results <- bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
+      set.seed(seed)
+      results <- bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
                       group_parameters = 0, 
                       joint_parameters = length(estimates), 
                       fraction = fraction)
-  }
+    }
     
     else{
-      
-        #Overall standardization of the data "overall predictors"`
-        standardized <- apply(x@frame, 2, scale)
-        standardized <- as.data.frame(standardized)
-        standardized[, ncol(standardized)] <- x@frame[ , ncol(x@frame)] #add grouping factor
-        names(standardized) <- n_vas #add the same names
-        s <- lmer(x@call$formula, data = standardized, REML = FALSE)
-        estimates_s <- coef(s) #extract the ML (unstandardized) "random" effects 
-        estimates_s <- as.data.frame(estimates_s[[1]])
-        estimates_s <- estimates_s[ , -1] #remove the intercept
-        fixed_estimates_s <- apply(estimates_s, 2, mean) # obtain fix effects 
-        #names(fixed_estimates_s) <- n #add names
-        cov_s <- as.matrix(vcov(s)[-1, -1]) #obtain the covariance matrix of the 
-        #--------------------------------------
-        
-        set.seed(seed)
-        results <- bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
-                        group_parameters = 0, joint_parameters = length(estimates), 
-                        fraction = fraction)
-    }
-      
-  }
-  
-if(N == "ICC_effective"){
-    
-    N_lvl1 <- nrow(x@frame)
-    gr <- x@frame[ , ncol(x@frame)] # extract grouping factor
-    split_gr <- split(x@frame, gr) #split with respect to the grouping variable
-    N_clus <- mean(sapply(split_gr, nrow)) # compute the average group size
-    model_0 <- lmer(x@frame[,1] ~ 1 + (1|gr)) # fit a random-intercept model
-    var <- as.data.frame(VarCorr(model_0)) #extract the variances of the random intercept and residuals
-    ICC <- var[1, 4]/ (var[1, 4] + var[2, 4]) #compute the ICC
-    #compute the effective sample size based on the ICC approach 
-    N <- N_lvl1 / (1 + (N_clus - 1) * ICC)
-    
-  if(standardize == FALSE){ 
-      
-       #Unstandardized data
-       estimates <- coef(x) #extract the ML (unstandardized) "random" effects 
-       estimates <- as.data.frame(estimates[[1]])
-       estimates <- estimates[ , -1] #remove the intercept
-       fixed_estimates <- apply(estimates, 2, mean) # obtain fix effects 
-       cov <- as.matrix(vcov(x)[-1, -1]) #obtain the covariance matrix of the 
-       #--------------------------------------
-      
-       set.seed(seed)
-       results <- bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
-                      group_parameters = 0, 
-                      joint_parameters = length(estimates), 
-                      fraction = fraction)
-    }
-    
-  else{
       
       #Overall standardization of the data "overall predictors"`
       standardized <- apply(x@frame, 2, scale)
@@ -140,13 +56,154 @@ if(N == "ICC_effective"){
       #names(fixed_estimates_s) <- n #add names
       cov_s <- as.matrix(vcov(s)[-1, -1]) #obtain the covariance matrix of the 
       #--------------------------------------
-        
+      
       set.seed(seed)
       results <- bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
-                        group_parameters = 0, joint_parameters = length(estimates), 
-                        fraction = fraction)
-      }
+                      group_parameters = 0, joint_parameters = length(estimates), 
+                      fraction = fraction)
+    }
+    
+  }
+  
+  
+  if(N == "level_2"){
+    
+    N <- nrow(coef(x)[[1]]) #sample size = level 2 observations
+    
+    if(standardize == FALSE){ 
       
- }
+      #Unstandardized data
+      estimates <- coef(x) #extract the ML (unstandardized) "random" effects 
+      estimates <- as.data.frame(estimates[[1]])
+      estimates <- estimates[ , -1] #remove the intercept
+      fixed_estimates <- apply(estimates, 2, mean) # obtain fix effects 
+      cov <- as.matrix(vcov(x)[-1, -1]) #obtain the covariance matrix of the 
+      #--------------------------------------
+      
+      set.seed(seed)
+      results <- bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
+                      group_parameters = 0, 
+                      joint_parameters = length(estimates), 
+                      fraction = fraction)
+    }
+    
+    else{
+      
+      #Overall standardization of the data "overall predictors"`
+      standardized <- apply(x@frame, 2, scale)
+      standardized <- as.data.frame(standardized)
+      standardized[, ncol(standardized)] <- x@frame[ , ncol(x@frame)] #add grouping factor
+      names(standardized) <- n_vas #add the same names
+      s <- lmer(x@call$formula, data = standardized, REML = FALSE)
+      estimates_s <- coef(s) #extract the ML (unstandardized) "random" effects 
+      estimates_s <- as.data.frame(estimates_s[[1]])
+      estimates_s <- estimates_s[ , -1] #remove the intercept
+      fixed_estimates_s <- apply(estimates_s, 2, mean) # obtain fix effects 
+      #names(fixed_estimates_s) <- n #add names
+      cov_s <- as.matrix(vcov(s)[-1, -1]) #obtain the covariance matrix of the 
+      #--------------------------------------
+      
+      set.seed(seed)
+      results <- bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
+                      group_parameters = 0, joint_parameters = length(estimates), 
+                      fraction = fraction)
+    }
+    
+  }
+  
+  if(N == "ICC_effective"){
+    
+    N_lvl1 <- nrow(x@frame)
+    gr <- x@frame[ , ncol(x@frame)] # extract grouping factor
+    split_gr <- split(x@frame, gr) #split with respect to the grouping variable
+    N_clus <- mean(sapply(split_gr, nrow)) # compute the average group size
+    model_0 <- lmer(x@frame[,1] ~ 1 + (1|gr)) # fit a random-intercept model
+    var <- as.data.frame(VarCorr(model_0)) #extract the variances of the random intercept and residuals
+    ICC <- var[1, 4]/ (var[1, 4] + var[2, 4]) #compute the ICC
+    #compute the effective sample size based on the ICC approach 
+    N <- N_lvl1 / (1 + (N_clus - 1) * ICC)
+    
+    if(standardize == FALSE){ 
+      
+      #Unstandardized data
+      estimates <- coef(x) #extract the ML (unstandardized) "random" effects 
+      estimates <- as.data.frame(estimates[[1]])
+      estimates <- estimates[ , -1] #remove the intercept
+      fixed_estimates <- apply(estimates, 2, mean) # obtain fix effects 
+      cov <- as.matrix(vcov(x)[-1, -1]) #obtain the covariance matrix of the 
+      #--------------------------------------
+      
+      set.seed(seed)
+      results <- bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
+                      group_parameters = 0, 
+                      joint_parameters = length(estimates), 
+                      fraction = fraction)
+    }
+    
+    else{
+      
+      #Overall standardization of the data "overall predictors"`
+      standardized <- apply(x@frame, 2, scale)
+      standardized <- as.data.frame(standardized)
+      standardized[, ncol(standardized)] <- x@frame[ , ncol(x@frame)] #group
+      names(standardized) <- n_vas #add the same names
+      s <- lmer(x@call$formula, data = standardized, REML = FALSE)
+      estimates_s <- coef(s) #extract the ML (unstandardized) "random" effects 
+      estimates_s <- as.data.frame(estimates_s[[1]])
+      estimates_s <- estimates_s[ , -1] #remove the intercept
+      fixed_estimates_s <- apply(estimates_s, 2, mean) # obtain fix effects 
+      #names(fixed_estimates_s) <- n #add names
+      cov_s <- as.matrix(vcov(s)[-1, -1]) #obtain the covariance matrix of the 
+      #--------------------------------------
+      
+      set.seed(seed)
+      results <- bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
+                      group_parameters = 0, joint_parameters = length(estimates), 
+                      fraction = fraction)
+    }
+    
+  }
+  
+  if(N == N){
+    
+    N <- N #value supplied by the user
+    
+    if(standardize == FALSE){ 
+      
+      #Unstandardized data
+      fixed_estimates <- apply(estimates, 2, mean) # obtain fix effects 
+      cov <- as.matrix(vcov(x)[-1, -1]) #obtain the covariance matrix of the 
+      #--------------------------------------
+      
+      set.seed(seed)
+      results <- bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
+                      group_parameters = 0, 
+                      joint_parameters = length(estimates), 
+                      fraction = fraction)
+    }
+    
+    else{
+      
+      #Overall standardization of the data "overall predictors"`
+      standardized <- apply(x@frame, 2, scale)
+      standardized <- as.data.frame(standardized)
+      standardized[, ncol(standardized)] <- x@frame[ , ncol(x@frame)] #group
+      names(standardized) <- n_vas #add the same names
+      s <- lmer(x@call$formula, data = standardized, REML = FALSE)
+      estimates_s <- coef(s) #extract the ML (unstandardized) "random" effects 
+      estimates_s <- as.data.frame(estimates_s[[1]])
+      estimates_s <- estimates_s[ , -1] #remove the intercept
+      fixed_estimates_s <- apply(estimates_s, 2, mean) # obtain fix effects 
+      #names(fixed_estimates_s) <- n #add names
+      cov_s <- as.matrix(vcov(s)[-1, -1]) #obtain the covariance matrix of the 
+      #--------------------------------------
+      
+      set.seed(seed)
+      results <- bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
+                      group_parameters = 0, joint_parameters = length(estimates), 
+                      fraction = fraction)
+    }
+    
+  }
   return(results)
 } 
