@@ -44,9 +44,9 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
     else{
       
       #Overall standardization of the data "overall predictors"`
-      standardized <- apply(x@frame, 2, scale)
+      standardized <- apply(x@frame[, -ncol(x@frame)], 2, scale)
       standardized <- as.data.frame(standardized)
-      standardized[, ncol(standardized)] <- x@frame[ , ncol(x@frame)] #group
+      standardized[, ncol(standardized) + 1] <- x@frame[ , ncol(x@frame)] #group
       names(standardized) <- n_vas #add the same names
       s <- lmer(x@call$formula, data = standardized, REML = FALSE)
       estimates_s <- coef(s) #extract the ML (unstandardized) "random" effects 
@@ -90,9 +90,9 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
     else{
       
       #Overall standardization of the data "overall predictors"`
-      standardized <- apply(x@frame, 2, scale)
+      standardized <- apply(x@frame[, -ncol(x@frame)], 2, scale)
       standardized <- as.data.frame(standardized)
-      standardized[, ncol(standardized)] <- x@frame[ , ncol(x@frame)] #add grouping factor
+      standardized[, ncol(standardized) + 1] <- x@frame[ , ncol(x@frame)] #group factor
       names(standardized) <- n_vas #add the same names
       s <- lmer(x@call$formula, data = standardized, REML = FALSE)
       estimates_s <- coef(s) #extract the ML (unstandardized) "random" effects 
@@ -143,9 +143,9 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
     else{
       
       #Overall standardization of the data "overall predictors"`
-      standardized <- apply(x@frame, 2, scale)
+      standardized <- apply(x@frame[, -ncol(x@frame)], 2, scale)
       standardized <- as.data.frame(standardized)
-      standardized[, ncol(standardized)] <- x@frame[ , ncol(x@frame)] #group
+      standardized[, ncol(standardized) + 1] <- x@frame[ , ncol(x@frame)] #group
       names(standardized) <- n_vas #add the same names
       s <- lmer(x@call$formula, data = standardized, REML = FALSE)
       estimates_s <- coef(s) #extract the ML (unstandardized) "random" effects 
@@ -185,9 +185,9 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
     else{
       
       #Overall standardization of the data "overall predictors"`
-      standardized <- apply(x@frame, 2, scale)
+      standardized <- apply(x@frame[, -ncol(x@frame)], 2, scale)
       standardized <- as.data.frame(standardized)
-      standardized[, ncol(standardized)] <- x@frame[ , ncol(x@frame)] #group
+      standardized[, ncol(standardized) + 1] <- x@frame[ , ncol(x@frame)] #group
       names(standardized) <- n_vas #add the same names
       s <- lmer(x@call$formula, data = standardized, REML = FALSE)
       estimates_s <- coef(s) #extract the ML (unstandardized) "random" effects 
