@@ -15,7 +15,7 @@
 
 bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE, 
                        N, seed){
-  
+  options(warn = -1)
   n_vas <- names(x@frame) #extract names of all variables in the data
   #--------------------------------------
   
@@ -26,15 +26,15 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
     if(standardize == FALSE){ 
       
       #Unstandardized data
-      fixed_estimates <- fixef(x)[-1]  # obtain fix effects 
+      fixed_estimates <- lme4::fixef(x)[-1]  # obtain fix effects 
       cov <- as.matrix(vcov(x)[-1, -1]) #obtain the covariance matrix of the 
       #--------------------------------------
       
       set.seed(seed)
-      results <- bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
-                      group_parameters = 0, 
-                      joint_parameters = length(estimates), 
-                      fraction = fraction)
+      results <- bain::bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
+                            group_parameters = 0, 
+                            joint_parameters = length(fixed_estimates), 
+                            fraction = fraction)
     }
     
     else{
@@ -44,15 +44,15 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
       standardized <- as.data.frame(standardized)
       standardized[, ncol(standardized) + 1] <- x@frame[, ncol(x@frame)] #group
       names(standardized) <- n_vas #add the same names
-      s <- lmer(x@call$formula, data = standardized, REML = FALSE)
-      fixed_estimates_s <- fixef(s)[-1] # obtain fix effects 
+      s <- lme4::lmer(x@call$formula, data = standardized, REML = FALSE)
+      fixed_estimates_s <- lme4::fixef(s)[-1] # obtain fix effects 
       cov_s <- as.matrix(vcov(s)[-1, -1]) #obtain the covariance matrix of the 
       #--------------------------------------
       
       set.seed(seed)
-      results <- bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
-                      group_parameters = 0, joint_parameters = length(estimates), 
-                      fraction = fraction)
+      results <- bain::bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
+                            group_parameters = 0, joint_parameters = length(fixed_estimates_s), 
+                            fraction = fraction)
     }
     
   }
@@ -60,19 +60,19 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
   
   if(N == "level_2"){
     
-    N <- nrow(coef(x)[[1]]) #sample size = level 2 observations
+    N <- length(unique(x@frame[,ncol(x@frame)])) #sample size = level 2 observations
     
     if(standardize == FALSE){ 
       
       #Unstandardized data
-      fixed_estimates <- fixef(x)[-1]  # obtain fix effects 
+      fixed_estimates <- lme4::fixef(x)[-1]  # obtain fix effects 
       cov <- as.matrix(vcov(x)[-1, -1]) #obtain the covariance matrix of the 
       #--------------------------------------
       set.seed(seed)
-      results <- bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
-                      group_parameters = 0, 
-                      joint_parameters = length(estimates), 
-                      fraction = fraction)
+      results <- bain::bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
+                            group_parameters = 0, 
+                            joint_parameters = length(fixed_estimates), 
+                            fraction = fraction)
     }
     
     else{
@@ -82,15 +82,15 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
       standardized <- as.data.frame(standardized)
       standardized[, ncol(standardized) + 1] <- x@frame[, ncol(x@frame)] #group factor
       names(standardized) <- n_vas #add the same names
-      s <- lmer(x@call$formula, data = standardized, REML = FALSE)
-      fixed_estimates_s <- fixef(s)[-1] # obtain fix effects 
+      s <- lme4::lmer(x@call$formula, data = standardized, REML = FALSE)
+      fixed_estimates_s <- lme4::fixef(s)[-1] # obtain fix effects 
       cov_s <- as.matrix(vcov(s)[-1, -1]) #obtain the covariance matrix of the 
       #--------------------------------------
       
       set.seed(seed)
-      results <- bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
-                      group_parameters = 0, joint_parameters = length(estimates), 
-                      fraction = fraction)
+      results <- bain::bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
+                            group_parameters = 0, joint_parameters = length(fixed_estimates_s), 
+                            fraction = fraction)
     }
     
   }
@@ -101,7 +101,7 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
     gr <- x@frame[ , ncol(x@frame)] # extract grouping factor
     split_gr <- split(x@frame, gr) #split with respect to the grouping variable
     N_clus <- mean(sapply(split_gr, nrow)) # compute the average group size
-    model_0 <- lmer(x@frame[,1] ~ 1 + (1|gr)) # fit a random-intercept model
+    model_0 <- lme4::lmer(x@frame[,1] ~ 1 + (1|gr)) # fit a random-intercept model
     var <- as.data.frame(VarCorr(model_0)) #extract the variances of the random intercept and residuals
     ICC <- var[1, 4]/ (var[1, 4] + var[2, 4]) #compute the ICC
     
@@ -111,15 +111,15 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
     if(standardize == FALSE){ 
       
       #Unstandardized data
-      fixed_estimates <- fixef(x)[-1]  # obtain fix effects 
+      fixed_estimates <- lme4::fixef(x)[-1]  # obtain fix effects 
       cov <- as.matrix(vcov(x)[-1, -1]) #obtain the covariance matrix of the 
       #--------------------------------------
       
       set.seed(seed)
-      results <- bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
-                      group_parameters = 0, 
-                      joint_parameters = length(estimates), 
-                      fraction = fraction)
+      results <- bain::bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
+                            group_parameters = 0, 
+                            joint_parameters = length(fixed_estimates), 
+                            fraction = fraction)
     }
     
     else{
@@ -129,15 +129,15 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
       standardized <- as.data.frame(standardized)
       standardized[, ncol(standardized) + 1] <- x@frame[, ncol(x@frame)] #group
       names(standardized) <- n_vas #add the same names
-      s <- lmer(x@call$formula, data = standardized, REML = FALSE)
-      fixed_estimates_s <- fixef(s)[-1] # obtain fix effects 
+      s <- lme4::lmer(x@call$formula, data = standardized, REML = FALSE)
+      fixed_estimates_s <- lme4::fixef(s)[-1] # obtain fix effects 
       cov_s <- as.matrix(vcov(s)[-1, -1]) #obtain the covariance matrix of the 
       #--------------------------------------
       
       set.seed(seed)
-      results <- bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
-                      group_parameters = 0, joint_parameters = length(estimates), 
-                      fraction = fraction)
+      results <- bain::bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
+                            group_parameters = 0, joint_parameters = length(fixed_estimates_s), 
+                            fraction = fraction)
     }
     
   }
@@ -149,15 +149,15 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
     if(standardize == FALSE){ 
       
       #Unstandardized data
-      fixed_estimates <- fixef(x)[-1]  # obtain fix effects 
+      fixed_estimates <- lme4::fixef(x)[-1]  # obtain fix effects 
       cov <- as.matrix(vcov(x)[-1, -1]) #obtain the covariance matrix of th
       #--------------------------------------
       
       set.seed(seed)
-      results <- bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
-                      group_parameters = 0, 
-                      joint_parameters = length(estimates), 
-                      fraction = fraction)
+      results <- bain::bain(fixed_estimates, hypotheses, n = N, Sigma = cov, 
+                            group_parameters = 0, 
+                            joint_parameters = length(fixed_estimates), 
+                            fraction = fraction)
     }
     
     else{
@@ -167,15 +167,15 @@ bain_2lmer <- function(x, hypotheses, fraction, standardize = FALSE,
       standardized <- as.data.frame(standardized)
       standardized[, ncol(standardized) + 1] <- x@frame[, ncol(x@frame)] #group
       names(standardized) <- n_vas #add the same names
-      s <- lmer(x@call$formula, data = standardized, REML = FALSE)
-      fixed_estimates_s <- fixef(s)[-1] # obtain fix effects 
+      s <- lme4::lmer(x@call$formula, data = standardized, REML = FALSE)
+      fixed_estimates_s <- lme4::fixef(s)[-1] # obtain fix effects 
       cov_s <- as.matrix(vcov(s)[-1, -1]) #obtain the covariance matrix of the 
       #--------------------------------------
       
       set.seed(seed)
-      results <- bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
-                      group_parameters = 0, joint_parameters = length(estimates), 
-                      fraction = fraction)
+      results <- bain::bain(fixed_estimates_s, hypotheses, n = N, Sigma = cov_s,
+                            group_parameters = 0, joint_parameters = length(fixed_estimates_s), 
+                            fraction = fraction)
     }
     
   }
